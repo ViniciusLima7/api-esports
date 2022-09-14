@@ -6,7 +6,7 @@ const prisma = new PrismaClient({
   log: ["query"],
 });
 
-// List Games
+// List Games e Conta Anuncios Vinculados
 app.get("/games", async (req, res) => {
   const games = await prisma.game.findMany({
     include: {
@@ -27,13 +27,37 @@ app.post("/ads", (req, res) => {
 });
 
 // List Ads do Game
-app.get("/games/:id/ads", (req, res) => {
+app.get("/games/:id/ads", async (req, res) => {
+  const gameId = req.params.id;
+
+  const ads = await prisma.ad.findMany({
+    select: {
+      id: true,
+      gameId: true,
+      name: true,
+      yearsPlaying: true,
+      // discord: false, por false ou não trazer tem o mesmo efeito
+      weekDays: true,
+      hourStart: true,
+      hourEnd: true,
+      useVoiceChannel: true,
+    },
+
+    where: {
+      gameId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return res.json([
-    { id: 1, name: "Anuncio 1" },
-    { id: 2, name: "Anuncio 2" },
-    { id: 3, name: "Anuncio 3" },
-    { id: 4, name: "Anuncio 4" },
-    { id: 5, name: "Anuncio 5" },
+    ads.map((ad) => {
+      return {
+        ...ad,
+        weekDays: ad.weekDays.split(","),
+      };
+    }),
   ]);
 });
 
