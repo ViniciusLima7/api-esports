@@ -1,9 +1,20 @@
-import express from "express";
+import express, { response } from "express";
 
 const app = express();
 
-app.get("/ads", (request, response) => {
-  return response.json([
+// List Games
+app.get("/games", (req, res) => {
+  return res.json([]);
+});
+
+// Create Ads
+app.post("/ads", (req, res) => {
+  return res.status(201).json([]);
+});
+
+// List Ads do Game
+app.get("/games/:id/ads", (req, res) => {
+  return res.json([
     { id: 1, name: "Anuncio 1" },
     { id: 2, name: "Anuncio 2" },
     { id: 3, name: "Anuncio 3" },
@@ -12,4 +23,15 @@ app.get("/ads", (request, response) => {
   ]);
 });
 
+// List Discord do Game
+app.get("/ads/:id/discord", (req, res) => {
+  return res.json([]);
+});
+
 app.listen(3333);
+
+//GET -  Listar, Acessar
+//POST - Criando Algo
+//PUT - Editando Algo, varios campos
+//PATCH - Editar informação especifica
+//DELETE - Deletar Algo
