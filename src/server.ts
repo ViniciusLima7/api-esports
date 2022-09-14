@@ -1,10 +1,24 @@
 import express, { response } from "express";
+import { PrismaClient } from "@prisma/client";
 
 const app = express();
+const prisma = new PrismaClient({
+  log: ["query"],
+});
 
 // List Games
-app.get("/games", (req, res) => {
-  return res.json([]);
+app.get("/games", async (req, res) => {
+  const games = await prisma.game.findMany({
+    include: {
+      _count: {
+        select: {
+          ads: true,
+        },
+      },
+    },
+  });
+
+  return res.json(games);
 });
 
 // Create Ads
